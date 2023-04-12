@@ -1,0 +1,27 @@
+{
+  "name": "com.dustin-roden.game-framework",
+  "displayName": "Game Framework",
+  "version": "0.0.1",
+  "unity": "2021.3",
+  "description": "A framework of systems that comprise a game.",
+  "keywords": [
+    "unity",
+	  "unity3d",
+	  "upm",
+    "dustin-roden",
+    "utility"
+  ],
+  "homepage": "https://github.com/hiiii5/game-framework.git",
+  "bugs": {
+    "url": "https://github.com/hiiii5/game-framework/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/hiiii5/game-framework.git"
+  },
+  "license": "MIT",
+  "author": "Dustin Roden (https://github.com/hiiii5)",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

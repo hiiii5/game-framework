@@ -1,0 +1,11 @@
+{
+  "name": "Unity.com.dustin-roden.game-framework.Editor.Tests",
+  "references": [
+    "Unity.com.dustin-roden.game-framework"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": []
+}
