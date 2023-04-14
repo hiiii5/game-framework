@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 
 namespace Game.Core
 {
-    public abstract class PlayerController : BaseController
+    public class PlayerController : Controller
     {
         public struct MoveData : IReplicateData
         {

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Game.Core
 {
-    public abstract class BaseState : NetworkBehaviour
+    public class GameState : NetworkBehaviour
     {
         // get the first instance from the instance finder for fishnet.
         public NetworkManager GetNetworkManager()

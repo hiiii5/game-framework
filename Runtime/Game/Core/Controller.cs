@@ -2,7 +2,7 @@
 
 namespace Game.Core
 {
-    public abstract class BaseController : NetworkBehaviour
+    public class Controller : NetworkBehaviour
     {
         // generate a unique ID for the player
         private readonly string _controllerID = System.Guid.NewGuid().ToString();
