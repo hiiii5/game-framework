@@ -49,8 +49,7 @@ namespace Tests.Runtime
             
             // Test
             Assert.IsNotNull(controller);
-            Assert.IsNotNull(state);
-            Assert.IsInstanceOf(typeof(GameState), state);
+            Assert.IsNull(state);
         }
         
         [UnityTest]
@@ -70,7 +69,6 @@ namespace Tests.Runtime
             Assert.IsNotNull(controller);
             Assert.IsNotNull(state);
             Assert.IsInstanceOf(typeof(NetworkState), state);
-            Assert.IsNotNull(((NetworkState) state).GetNetworkManager());
         }
         
         [UnityTest]

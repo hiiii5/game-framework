@@ -8,27 +8,27 @@ using UnityEngine;
 namespace Game.Core
 {
     public class NetworkState : NetworkBehaviour, IGameState {
-        // get the first instance from the instance finder for fishnet.
+        /// <summary>
+        /// Gets the NetworkManager for FishNet.
+        /// </summary>
+        /// <returns>The first instance of the network manager. See <see cref="InstanceFinder"/>.</returns>
         public NetworkManager GetNetworkManager()
         {
             return InstanceFinder.NetworkManager;
         }
 
-        // Find a player controller by their ID
-        public NetworkController FindPlayerControllerByID(string id)
+        // Find all game objects in the scene with player components and return the one with the matching ID.
+        public IController FindControllerByID(string id)
         {
-            var players = GameObject.FindGameObjectsWithTag("Player");
-            return players.Select(player =>
-                player.GetComponent<NetworkController>()).FirstOrDefault(playerController =>
-                playerController.GetControllerID() == id);
+            return FindObjectsOfType<NetworkPlayer>().FirstOrDefault(player => player.GetControllerID() == id);
         }
-
-        // Create a list of all player controllers
-        public List<NetworkController> GetAllPlayerControllers()
+        
+        // Find all game objects in the scene with player components and return them all.
+        public List<IController> GetAllControllers()
         {
-            var players = GameObject.FindGameObjectsWithTag("Player");
-            return players.Select(player =>
-                player.GetComponent<NetworkController>()).ToList();
+            var list = FindObjectsOfType<NetworkPlayer>().ToList();
+            
+            return list.Cast<IController>().ToList();
         }
     }
 }

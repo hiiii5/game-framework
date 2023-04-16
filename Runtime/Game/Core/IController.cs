@@ -1,6 +1,7 @@
 ﻿namespace Game.Core {
 	public interface IController {
-		string GetControllerID();
-		IGameState GetState();
+		public string GetControllerID();
+		public IGameState GetState();
+		public void SetState(IGameState state);
 	}
 }

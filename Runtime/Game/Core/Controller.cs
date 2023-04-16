@@ -14,5 +14,9 @@ namespace Game.Core {
 		{
 			return State;
 		}
+
+		public void SetState(IGameState state) {
+			State = state;
+		}
 	}
 }

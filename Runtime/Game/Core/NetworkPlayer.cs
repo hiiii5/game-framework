@@ -7,62 +7,7 @@ using UnityEngine.InputSystem;
 
 namespace Game.Core
 {
-    public class Player : NetworkController
-    {
-        public struct MoveData : IReplicateData
-        {
-            public float Horizontal;
-            public float Vertical;
-            
-            private uint _tick;
-            
-            public MoveData(float horizontal, float vertical)
-            {
-                this.Horizontal = horizontal;
-                this.Vertical = vertical;
-                _tick = 0;
-            }
-
-            public void Dispose() { }
-            
-            public uint GetTick()
-            {
-                return _tick;
-            }
-            
-            public void SetTick(uint tick)
-            {
-                _tick = tick;
-            }
-        }
-        
-        /// <summary>
-        /// Data on how to reconcile.
-        /// Server sends this back to the client. Once the client receives this they
-        /// will reset their object using this information. Like with MoveData anything that may
-        /// affect your movement should be reset. Since this is just a transform only position and
-        /// rotation would be reset. But a rigidbody would include velocities as well. If you are using
-        /// an asset it's important to know what systems in that asset affect movement and need
-        /// to be reset as well.
-        /// </summary>
-        public struct ReconcileData : IReconcileData
-        {
-            public Vector3 Position;
-            public Quaternion Rotation;
-            private uint _tick;
-
-            public ReconcileData(Vector3 position, Quaternion rotation)
-            {
-                Position = position;
-                Rotation = rotation;
-                _tick = 0;
-            }
-
-            public void Dispose() { }
-            public uint GetTick() => _tick;
-            public void SetTick(uint value) => _tick = value;
-        }
-        
+    public class NetworkPlayer : NetworkController, IPlayer {
         // An event that is called when the player's look value changes
         public delegate void OnLookChanged(Vector2 look);
         public event OnLookChanged OnLookChangedEvent;
@@ -80,11 +25,12 @@ namespace Game.Core
         private InputActionAsset inputActionMap;
         public InputActionAsset InputActionMap => inputActionMap;
 
+        public IReconciliationStrategy ReconciliationStrategy { get; private set; }
+        
         private Vector2 _move;
         private Vector2 _look;
 
-        private void Awake()
-        {
+        private void Awake() {
             /* Prediction is tick based so you must
              * send datas during ticks. You can use whichever
              * tick best fits your need, such as PreTick, Tick, or PostTick.
@@ -94,6 +40,9 @@ namespace Game.Core
              * loaded. If you are using several NetworkManagers you would want
              * to subscrube in OnStartServer/Client using base.TimeManager. */
             InstanceFinder.TimeManager.OnTick += TimeManager_OnTick;
+
+            ReconciliationStrategy ??= new DefaultReconciliationStrategy();
+            BindInput();
         }
         
          private void TimeManager_OnTick()
@@ -103,7 +52,7 @@ namespace Game.Core
                 /* Call reconcile using default, and false for
                  * asServer. This will reset the client to the latest
                  * values from server and replay cached inputs. */
-                Reconciliation(default, false);
+                ReconciliationStrategy.Perform(default, false, transform);
                 /* CheckInput builds MoveData from user input. When there
                  * is no input CheckInput returns default. You can handle this
                  * however you like but Move should be called when default if
@@ -134,31 +83,30 @@ namespace Game.Core
                  * amount of times. If there is no input to process from the client this
                  * will not continue to send data. */
                 var rd = new ReconcileData(transform.position, transform.rotation);
-                Reconciliation(rd, true);
+                ReconciliationStrategy.Perform(rd, true, transform);
+                //Reconciliation(rd, true, transform);
             }
         }
          
+         // /// <summary>
+         // /// A Reconcile attribute indicates the client will reconcile
+         // /// using the data and logic within the method. When asServer
+         // /// is true the data is sent to the client with redundancy,
+         // /// and the server will not run the logic.
+         // /// When asServer is false the client will reset using the logic
+         // /// you supply then replay their inputs.
+         // /// </summary>
+         // [Reconcile]
+         // private void Reconciliation(ReconcileData rd, bool asServer, Transform transform, Channel channel = Channel.Unreliable)
+         // {
+         //     transform.position = rd.Position;
+         //     transform.rotation = rd.Rotation;
+         // }
+         
          /// <summary>
-         /// A Reconcile attribute indicates the client will reconcile
-         /// using the data and logic within the method. When asServer
-         /// is true the data is sent to the client with redundancy,
-         /// and the server will not run the logic.
-         /// When asServer is false the client will reset using the logic
-         /// you supply then replay their inputs.
-         /// </summary>
-         [Reconcile]
-         private void Reconciliation(ReconcileData rd, bool asServer, Channel channel = Channel.Unreliable)
-         {
-             var myTransform = transform;
-             myTransform.position = rd.Position;
-             myTransform.rotation = rd.Rotation;
-         }
-
-
-        /// <summary>
         /// A simple method to get input. This doesn't have any relation to the prediction.
         /// </summary>
-        private void CheckInput(out MoveData md)
+         public void CheckInput(out MoveData md)
         {
             md = default;
 
@@ -170,15 +118,8 @@ namespace Game.Core
             md = new MoveData(_move.x, _move.y);
         }
 
-        public override void OnStartClient()
-        {
-            base.OnStartClient();
-            
-            BindInput();
-        }
-
-        // Create a virtual function to bind to the player's input action map.
-        protected virtual void BindInput()
+         // Create a virtual function to bind to the player's input action map.
+         public virtual void BindInput()
         {
             if(!IsOwner)
                 return;
@@ -218,8 +159,8 @@ namespace Game.Core
         {
             LookInput(obj);
         }
-        
-        private void LookInput(InputAction.CallbackContext obj)
+
+        public void LookInput(InputAction.CallbackContext obj)
         {
             // Get the player's input action map's "Look" action's value
             var lookValue = obj.ReadValue<Vector2>();
@@ -236,8 +177,8 @@ namespace Game.Core
         {
             MoveInput(obj);
         }
-        
-        private void MoveInput(InputAction.CallbackContext obj)
+
+        public void MoveInput(InputAction.CallbackContext obj)
         {
             // Get the player's input action map's "Move" action's value
             var moveValue = obj.ReadValue<Vector2>();
