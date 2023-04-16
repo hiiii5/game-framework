@@ -5,9 +5,9 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
-namespace Tests.Runtime
+namespace Tests.Editor
 {
-    public class Game FrameworkTests
+    public class GameFrameworkTests
     {
         [SetUp]
         public void Setup()

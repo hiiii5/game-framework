@@ -7,8 +7,7 @@ using UnityEngine;
 
 namespace Game.Core
 {
-    public class GameState : NetworkBehaviour
-    {
+    public class NetworkState : NetworkBehaviour, IGameState {
         // get the first instance from the instance finder for fishnet.
         public NetworkManager GetNetworkManager()
         {
@@ -16,20 +15,20 @@ namespace Game.Core
         }
 
         // Find a player controller by their ID
-        public BaseController FindPlayerControllerByID(string id)
+        public NetworkController FindPlayerControllerByID(string id)
         {
             var players = GameObject.FindGameObjectsWithTag("Player");
             return players.Select(player =>
-                player.GetComponent<BaseController>()).FirstOrDefault(playerController =>
+                player.GetComponent<NetworkController>()).FirstOrDefault(playerController =>
                 playerController.GetControllerID() == id);
         }
 
         // Create a list of all player controllers
-        public List<BaseController> GetAllPlayerControllers()
+        public List<NetworkController> GetAllPlayerControllers()
         {
             var players = GameObject.FindGameObjectsWithTag("Player");
             return players.Select(player =>
-                player.GetComponent<BaseController>()).ToList();
+                player.GetComponent<NetworkController>()).ToList();
         }
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 
 namespace Game.Core
 {
-    public class PlayerController : Controller
+    public class Player : NetworkController
     {
         public struct MoveData : IReplicateData
         {
@@ -78,6 +78,7 @@ namespace Game.Core
         // Input action map
         [SerializeField]
         private InputActionAsset inputActionMap;
+        public InputActionAsset InputActionMap => inputActionMap;
 
         private Vector2 _move;
         private Vector2 _look;
@@ -132,7 +133,7 @@ namespace Game.Core
                  * Replicate method (Move) this will send with redundancy a certain
                  * amount of times. If there is no input to process from the client this
                  * will not continue to send data. */
-                ReconcileData rd = new ReconcileData(transform.position, transform.rotation);
+                var rd = new ReconcileData(transform.position, transform.rotation);
                 Reconciliation(rd, true);
             }
         }
@@ -183,7 +184,7 @@ namespace Game.Core
                 return;
             
             // Get the player's input action map
-            var actionAsset = GetInputActionMap();
+            var actionAsset = InputActionMap;
             
             // Get the player's input action map's "Move" action
             var moveAction = actionAsset.FindAction("Move");
@@ -277,15 +278,9 @@ namespace Game.Core
                 //VFX!
             }
 
-            Vector3 move = new Vector3(md.Horizontal, 0f, md.Vertical);
+            var move = new Vector3(md.Horizontal, 0f, md.Vertical);
             move *= (float)base.TimeManager.TickDelta;
             OnMoveEvent?.Invoke(move);
-        }
-
-        // Get the player's input action map
-        public InputActionAsset GetInputActionMap()
-        {
-            return inputActionMap;
         }
     }
 }

@@ -1,43 +1,18 @@
 ﻿using FishNet.Object;
 
-namespace Game.Core
-{
-    public class Controller : NetworkBehaviour
-    {
-        // generate a unique ID for the player
-        private readonly string _controllerID = System.Guid.NewGuid().ToString();
+namespace Game.Core {
+	public class Controller : NetworkBehaviour, IController {
+		private readonly string _controllerID = System.Guid.NewGuid().ToString();
+		protected NetworkState State;
 
-        private BaseState _state;
-        
-        public override void OnStartClient()
-        {
-            base.OnStartClient();
+		public string GetControllerID()
+		{
+			return _controllerID;
+		}
 
-            // Add a BaseState component to this controller
-            _state = gameObject.AddComponent<BaseState>();
-        }
-
-        public override void OnStopClient()
-        {
-            base.OnStopClient();
-            
-            // destroy the state if still valid
-            if (_state is not null)
-            {
-                Destroy(_state);
-            }
-        }
-
-        // Get the controller's ID
-        public string GetControllerID()
-        {
-            return _controllerID;
-        }
-        
-        // Get the controller's state
-        public BaseState GetState()
-        {
-            return _state;
-        }
-    }
+		public NetworkState GetState()
+		{
+			return State;
+		}
+	}
 }
