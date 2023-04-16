@@ -19,7 +19,7 @@
             // destroy the state if still valid
             if (State is not null)
             {
-                Destroy(State);
+                Destroy((NetworkState)State);
             }
         }
     }

@@ -3,14 +3,14 @@
 namespace Game.Core {
 	public class Controller : NetworkBehaviour, IController {
 		private readonly string _controllerID = System.Guid.NewGuid().ToString();
-		protected NetworkState State;
+		protected IGameState State;
 
 		public string GetControllerID()
 		{
 			return _controllerID;
 		}
 
-		public NetworkState GetState()
+		public IGameState GetState()
 		{
 			return State;
 		}
