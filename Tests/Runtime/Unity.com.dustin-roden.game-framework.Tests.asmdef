@@ -1,11 +1,23 @@
 {
-  "name": "Unity.com.dustin-roden.game-framework.Tests",
-  "references": [
-    "Unity.com.dustin-roden.game-framework"
-  ],
-  "optionalUnityReferences": [
-    "TestAssemblies"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": []
+    "name": "Unity.com.dustin-roden.game-framework.Tests",
+    "rootNamespace": "",
+    "references": [
+        "Unity.com.dustin-roden.game-framework",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "FishNet.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

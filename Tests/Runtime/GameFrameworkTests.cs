@@ -1,9 +1,8 @@
 ﻿using System.Collections;
+using Game.Core;
 using NUnit.Framework;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
-using UnityEngine.UI;
 
 namespace Tests.Runtime
 {
@@ -20,15 +19,77 @@ namespace Tests.Runtime
         }
 
         [UnityTest]
-        public IEnumerator TestMethod_TestingHow_TestResult()
+        public IEnumerator Controller_GetControllerID_TestResult()
         {
             // Arrange
-
+            // Create a new game object
+            var gameObject = new GameObject();
+            IController controller = gameObject.AddComponent<Controller>();
+            
+            // Act
+            yield return null;
+            
+            // Test
+            Assert.IsNotNull(controller);
+            Assert.IsNotEmpty(controller.GetControllerID());
+        }
+        
+        [UnityTest]
+        public IEnumerator Controller_GetState_TestResult()
+        {
+            // Arrange
+            // Create a new game object
+            var gameObject = new GameObject();
+            IController controller = gameObject.AddComponent<Controller>();
+            
             // Act
             yield return null;
 
-            // Assert
-            Assert.AreEqual(1, 1);
+            IGameState state = controller.GetState();
+            
+            // Test
+            Assert.IsNotNull(controller);
+            Assert.IsNotNull(state);
+            Assert.IsInstanceOf(typeof(GameState), state);
+        }
+        
+        [UnityTest]
+        public IEnumerator NetworkState_GetNetworkManager_TestResult()
+        {
+            // Arrange
+            // Create a new game object
+            var gameObject = new GameObject();
+            IController controller = gameObject.AddComponent<NetworkController>();
+            
+            // Act
+            yield return null;
+
+            IGameState state = controller.GetState();
+            
+            // Test
+            Assert.IsNotNull(controller);
+            Assert.IsNotNull(state);
+            Assert.IsInstanceOf(typeof(NetworkState), state);
+            Assert.IsNotNull(((NetworkState) state).GetNetworkManager());
+        }
+        
+        [UnityTest]
+        public IEnumerator NetworkController_OnStartClient_TestResult()
+        {
+            // Arrange
+            // Create a new game object
+            var gameObject = new GameObject();
+            IController controller = gameObject.AddComponent<NetworkController>();
+            
+            // Act
+            yield return null;
+
+            IGameState state = controller.GetState();
+            
+            // Test
+            Assert.IsInstanceOf(typeof(NetworkController), controller);
+            Assert.IsInstanceOf(typeof(NetworkState), state);
+            Assert.IsNotNull(gameObject.GetComponent<NetworkController>());
         }
     }
 }
